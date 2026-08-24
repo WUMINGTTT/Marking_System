@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import prisma from '../lib/prisma';
+import { success, serverError } from '../utils/response';
 
 const router = Router();
 
@@ -14,10 +15,10 @@ router.get('/', async (req, res) => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    res.json(events);
-  } catch (error) {
-    console.error('获取活动列表失败:', error);
-    res.status(500).json({ error: '服务器内部错误' });
+    success(res, events);
+  } catch (err) {
+    console.error('获取活动列表失败:', err);
+    serverError(res);
   }
 });
 

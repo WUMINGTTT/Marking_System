@@ -1,5 +1,6 @@
 import express from 'express';
 import eventsRouter from './routes/events';
+import usersRouter from './routes/users';
 
 const app = express();
 const PORT = 3000;
@@ -10,6 +11,7 @@ app.use(express.json());
 
 // 挂载路由
 app.use('/api/events', eventsRouter);
+app.use('/api/users', usersRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');

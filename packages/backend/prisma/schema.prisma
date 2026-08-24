@@ -24,11 +24,12 @@ model User {
 
 // 活动表 - 如"第三届知识科普大赛"
 model Event {
-  id        Int          @id @default(autoincrement())
-  name      String       @db.VarChar(100)
-  creatorId Int          @map("creator_id")
-  status    String       @default("pending") @db.VarChar(20) // pending | active | finished
-  createdAt DateTime     @default(now()) @map("created_at")
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(100)
+  description String?      @db.VarChar(500)
+  creatorId   Int          @map("creator_id")
+  status      String       @default("pending") @db.VarChar(20) // pending | active | finished
+  createdAt   DateTime     @default(now()) @map("created_at")
 
   creator User          @relation("EventCreator", fields: [creatorId], references: [id])
   judges  EventJudge[]

@@ -35,6 +35,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      shared:
+        specifier: workspace:*
+        version: link:../shared
       ws:
         specifier: ^8.21.3
         version: 8.21.3(bufferutil@4.1.0)(utf-8-validate@5.0.10)
@@ -48,6 +51,8 @@ importers:
       prisma:
         specifier: ^6.0.0
         version: 6.19.3(typescript@7.0.2)
+
+  packages/shared: {}
 
 packages:
 
