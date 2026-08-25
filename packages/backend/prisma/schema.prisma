@@ -12,7 +12,7 @@ model User {
   id          Int          @id @default(autoincrement())
   username    String       @unique @db.VarChar(50)
   password    String       @db.VarChar(255)
-  displayName String       @map("display_name") @db.VarChar(50)
+  name        String       @db.VarChar(50)
   createdAt   DateTime     @default(now()) @map("created_at")
 
   createdEvents Event[]    @relation("EventCreator")
@@ -22,7 +22,7 @@ model User {
   @@map("users")
 }
 
-// 活动表 - 如"第三届知识科普大赛"
+// 活动表
 model Event {
   id          Int          @id @default(autoincrement())
   name        String       @db.VarChar(100)

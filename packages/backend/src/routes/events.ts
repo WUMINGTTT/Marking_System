@@ -10,12 +10,12 @@ router.get('/', async (req, res) => {
     const events = await prisma.event.findMany({
       include: {
         creator: {
-          select: { id: true, displayName: true },
+          select: { id: true, name: true },
         },
       },
       orderBy: { createdAt: 'desc' },
     });
-    success(res, events);
+    success(res, 200, '获取活动列表成功', events);
   } catch (err) {
     console.error('获取活动列表失败:', err);
     serverError(res);
