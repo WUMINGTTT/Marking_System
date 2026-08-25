@@ -13,6 +13,7 @@
   "packageManager": "pnpm@10.28.0",
   "dependencies": {
     "@prisma/client": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "shared": "workspace:*",
