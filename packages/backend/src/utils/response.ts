@@ -4,7 +4,8 @@ import { Response } from 'express';
  * 统一响应数据结构
  */
 interface ApiResponse<T = unknown> {
-  code: boolean;
+  code: number;
+  success: boolean;
   message: string;
   data: T | null;
 }
@@ -19,7 +20,8 @@ export function success<T>(
   data: T
 ): void {
   const response: ApiResponse<T> = {
-    code: true,
+    code: statusCode,
+    success: true,
     message,
     data,
   };
@@ -36,7 +38,8 @@ export function error(
   data = null
 ): void {
   const response: ApiResponse<null> = {
-    code: false,
+    code: statusCode,
+    success: false,
     message,
     data,
   };
