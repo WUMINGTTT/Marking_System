@@ -62,14 +62,14 @@ export class PasswordUtils {
    * @param plainPassword
    * @param hashPassword
    */
-  static compareSync(plainPassword: string, hashedPassword: string) : boolean {
+  static compareSync(plainPassword: string, hashedPassword: string): boolean {
     if (!plainPassword || !hashedPassword) {
       throw new Error('密码和已加密的密码都不能为空');
     }
-    try { 
-      return bcrypt.compareSync(plainPassword, hashedPassword)
-    } catch(err) {
-      throw new Error('密码验证失败')
+    try {
+      return bcrypt.compareSync(plainPassword, hashedPassword);
+    } catch (err) {
+      throw new Error('密码验证失败');
     }
   }
 }

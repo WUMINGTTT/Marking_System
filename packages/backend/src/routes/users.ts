@@ -6,7 +6,7 @@ import {
   getUserById,
   changeUserPassword,
   changeUserName,
-  deleteUser
+  deleteUser,
 } from '../services/user';
 
 const router = Router();
@@ -16,7 +16,7 @@ router.post('/login', loginUser); // 用户登录
 router.delete('/:id', deleteUser); // 删除用户
 router.get('/', getAllUsers); // 获取用户列表
 router.get('/:id', getUserById); // 获取单个用户
-router.post('/:id/password', changeUserPassword); // 修改密码
-router.post('/:id/name', changeUserName); // 修改昵称
+router.put('/password/:id', changeUserPassword); // 修改密码
+router.put('/:id', changeUserName); // 修改昵称
 
 export default router;

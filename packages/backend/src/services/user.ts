@@ -53,7 +53,7 @@ export async function registerUser(req: Request, res: Response) {
     // 加密密码
     const hashedPassword = await PasswordUtils.hashPassword(password);
 
-    const user : UserInfo | null = await prisma.user.create({
+    const user: UserInfo | null = await prisma.user.create({
       data: { username, password: hashedPassword, name },
       select: {
         id: true,
@@ -79,9 +79,10 @@ export async function loginUser(req: Request, res: Response) {
       return error(res, 400, '用户名和密码都是必填的');
     }
 
-    const user: (UserInfo & { password: string }) | null = await prisma.user.findUnique({
-      where: { username },
-    });
+    const user: (UserInfo & { password: string }) | null =
+      await prisma.user.findUnique({
+        where: { username },
+      });
 
     // 验证密码
     if (
@@ -155,9 +156,10 @@ export async function changeUserPassword(req: Request, res: Response) {
       return null;
     }
     const userId = parseInt(id);
-    const user: (UserInfo & { password: string }) | null = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user: (UserInfo & { password: string }) | null =
+      await prisma.user.findUnique({
+        where: { id: userId },
+      });
     if (!user) return;
 
     const { oldPassword, newPassword } = req.body as changePassword;
@@ -177,7 +179,7 @@ export async function changeUserPassword(req: Request, res: Response) {
         name: true,
         username: true,
         createdAt: true,
-      }
+      },
     });
 
     success(res, 200, '修改密码成功', updatedUser);
@@ -206,7 +208,7 @@ export async function changeUserName(req: Request, res: Response) {
         name: true,
         username: true,
         createdAt: true,
-      }
+      },
     });
 
     success(res, 200, '修改昵称成功', updatedUser);
