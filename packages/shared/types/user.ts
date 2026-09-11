@@ -39,7 +39,7 @@ export interface UserInfo {
  * @param oldPassword 旧密码
  * @param newPassword 新密码
  */
-export interface changePassword {
+export interface ChangePassword {
   oldPassword: string;
   newPassword: string;
 }
