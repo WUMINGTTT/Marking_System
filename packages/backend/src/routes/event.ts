@@ -1,25 +1,19 @@
 import { Router } from 'express';
-import prisma from '../lib/prisma';
-import { success, serverError } from '../utils/response';
+import { auth } from '../middlewares/auth';
+import {
+  getAllEvents,
+  createEvent,
+  getEventById,
+  updeteEvent,
+  deleteEvent,
+} from '../services/event';
 
 const router = Router();
 
-// GET /api/events - 获取所有活动
-router.get('/', async (req, res) => {
-  try {
-    const events = await prisma.event.findMany({
-      include: {
-        creator: {
-          select: { id: true, name: true },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-    success(res, 200, '获取活动列表成功', events);
-  } catch (err) {
-    console.error('获取活动列表失败:', err);
-    serverError(res);
-  }
-});
+router.post('/', auth, createEvent); // 创建活动
+router.get('/', auth, getAllEvents); // 获取所有活动
+router.get('/:id', auth, getEventById); // 获取单个活动
+router.put('/:id', auth, updeteEvent); // 修改活动
+router.delete('/:id', auth, deleteEvent); // 删除活动
 
 export default router;

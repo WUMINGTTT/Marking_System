@@ -8,12 +8,12 @@
  * @param createdAt 创建时间
  */
 export interface EventInfo {
-  id: string;
+  id: number;
   name: string;
-  description: string;
-  creatorId: string;
-  status: 'pending' | 'active' | 'finished';
-  createdAt: string;
+  description: string | null;
+  creatorId: number;
+  status: string; //'pending' | 'active' | 'finished'
+  createdAt: Date;
 }
 
 /**
@@ -23,5 +23,6 @@ export interface EventInfo {
  */
 export interface EventCreate {
   name: string;
-  description: string;
+  description: string | null;
+  status: string; //'pending' | 'active' | 'finished'
 }

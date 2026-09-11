@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { ResponseUtils } from './response';
 
 const JWT_SECRET =
   process.env.JWT_SECRET ||

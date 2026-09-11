@@ -6,16 +6,14 @@ import { JwtUtils } from '../utils/jwt';
 import { Request, Response } from 'express';
 
 /**
- * 根据请求参数查找用户
+ * 从 token 中查找当前登录用户
  * @returns 用户对象，如果不存在则返回 null 并自动发送错误响应
  */
-async function findUserByIdFromParams(req: Request, res: Response) {
-  const id = req.user?.userId;
-  if (typeof id !== 'string') {
-    ResponseUtils.error(res, 400, '无效的用户ID');
-    return null;
+async function findCurrentUser(req: Request, res: Response) {
+  const userId = req.user?.userId;
+  if (!userId) {
+    return ResponseUtils.error(res, 401, '未登录');
   }
-  const userId = parseInt(id);
   const user: UserInfo | null = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -26,13 +24,14 @@ async function findUserByIdFromParams(req: Request, res: Response) {
     },
   });
   if (!user) {
-    ResponseUtils.error(res, 404, '用户不存在');
-    return null;
+    return ResponseUtils.error(res, 404, '用户不存在');
   }
   return user;
 }
 
-// 注册新用户
+/**
+ * 注册新用户
+ */
 export async function registerUser(req: Request, res: Response) {
   try {
     const { username, password, name }: UserRegister = req.body;
@@ -58,7 +57,7 @@ export async function registerUser(req: Request, res: Response) {
     // 加密密码
     const hashedPassword = await PasswordUtils.hashPassword(password);
 
-    const user: UserInfo | null = await prisma.user.create({
+    const user = await prisma.user.create({
       data: { username, password: hashedPassword, name },
       select: {
         id: true,
@@ -75,7 +74,9 @@ export async function registerUser(req: Request, res: Response) {
   }
 }
 
-// 登录用户
+/**
+ * 登录用户
+ */
 export async function loginUser(req: Request, res: Response) {
   try {
     const { username, password }: UserLogin = req.body;
@@ -116,11 +117,12 @@ export async function loginUser(req: Request, res: Response) {
   }
 }
 
-// 删除用户
+/**
+ * 删除用户
+ */
 export async function deleteUser(req: Request, res: Response) {
   try {
-    const user: UserInfo | null = await findUserByIdFromParams(req, res);
-    if (!user) return;
+    const user = (await findCurrentUser(req, res)) as UserInfo;
 
     await prisma.user.delete({
       where: { id: user.id },
@@ -132,7 +134,9 @@ export async function deleteUser(req: Request, res: Response) {
   }
 }
 
-// 获取所有用户
+/**
+ * 获取所有用户
+ */
 export async function getAllUsers(req: Request, res: Response) {
   try {
     const users = await prisma.user.findMany({
@@ -150,14 +154,14 @@ export async function getAllUsers(req: Request, res: Response) {
   }
 }
 
-// 获取单个用户
+/**
+ * 获取单个用户
+ */
 export async function getUserById(req: Request, res: Response) {
   try {
-    // const user: UserInfo = (await findUserByIdFromParams(req, res)) as UserInfo;
     const id = req.params.id;
     if (typeof id !== 'string') {
-      ResponseUtils.error(res, 400, '无效的用户ID');
-      return null;
+      return ResponseUtils.error(res, 400, '无效的用户ID');
     }
     const user: UserInfo | null = await prisma.user.findUnique({
       where: { id: parseInt(id) },
@@ -176,20 +180,23 @@ export async function getUserById(req: Request, res: Response) {
   }
 }
 
-// 用户修改密码
+/**
+ * 用户修改密码
+ */
 export async function changeUserPassword(req: Request, res: Response) {
   try {
-    const id = req.user?.userId;
-    if (typeof id !== 'string') {
-      ResponseUtils.error(res, 400, '无效的用户ID');
-      return null;
+    const userId = req.user?.userId;
+    if (!userId) {
+      return ResponseUtils.error(res, 401, '未登录');
     }
-    const userId = parseInt(id);
+
     const user: (UserInfo & { password: string }) | null =
       await prisma.user.findUnique({
         where: { id: userId },
       });
-    if (!user) return;
+    if (!user) {
+      return ResponseUtils.error(res, 404, '用户不存在');
+    }
 
     const { oldPassword, newPassword }: ChangePassword = req.body;
 
@@ -225,7 +232,9 @@ export async function changeUserPassword(req: Request, res: Response) {
   }
 }
 
-// 用户修改昵称
+/**
+ * 用户修改昵称
+ */
 export async function changeUserName(req: Request, res: Response) {
   try {
     const { newName } = req.body;
@@ -234,7 +243,8 @@ export async function changeUserName(req: Request, res: Response) {
       return ResponseUtils.error(res, 400, '昵称不能为空');
     }
 
-    const user: UserInfo = (await findUserByIdFromParams(req, res)) as UserInfo;
+    const user = await findCurrentUser(req, res);
+    if (!user) return;
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
