@@ -1,6 +1,7 @@
 import express from 'express';
 import eventsRouter from './routes/event';
 import usersRouter from './routes/user';
+import teamsRouter from './routes/team';
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json());
 // 挂载路由
 app.use('/api/events', eventsRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/teams', teamsRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');

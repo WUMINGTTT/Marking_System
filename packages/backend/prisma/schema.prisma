@@ -58,8 +58,6 @@ model Team {
   id           Int      @id @default(autoincrement())
   eventId      Int      @map("event_id")
   name         String   @db.VarChar(100)
-  displayOrder Int      @map("display_order")
-  status       String   @default("waiting") @db.VarChar(20) // waiting | performing | finished
   createdAt    DateTime @default(now()) @map("created_at")
 
   event  Event  @relation(fields: [eventId], references: [id])
