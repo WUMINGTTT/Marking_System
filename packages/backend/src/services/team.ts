@@ -70,7 +70,7 @@ export async function getTeams(req: Request, res: Response) {
 }
 
 /**
- * 获取队伍详情
+ * 获取单个队伍
  */
 export async function getTeamById(req: Request, res: Response) {
   try {
@@ -80,9 +80,6 @@ export async function getTeamById(req: Request, res: Response) {
     }
     const team = await prisma.team.findUnique({
       where: { id: teamId },
-      include: {
-        scores: true,
-      },
     });
     if (!team) {
       return ResponseUtils.error(res, 404, '队伍不存在');

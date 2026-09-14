@@ -39,17 +39,17 @@ model Event {
   @@map("events")
 }
 
-// 活动评委关联表 - 记录每个活动的评委名单
+// 活动评委关联表
 model EventJudge {
   id        Int      @id @default(autoincrement())
   eventId   Int      @map("event_id")
-  judgeId   Int      @map("judge_id")
+  userId   Int      @map("judge_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   event Event @relation(fields: [eventId], references: [id])
-  judge User  @relation(fields: [judgeId], references: [id])
+  user User  @relation(fields: [userId], references: [id])
 
-  @@unique([eventId, judgeId])
+  @@unique([eventId, userId])
   @@map("event_judges")
 }
 

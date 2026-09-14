@@ -3,6 +3,7 @@ import eventsRouter from './routes/event';
 import usersRouter from './routes/user';
 import teamsRouter from './routes/team';
 import scoresRouter from './routes/score';
+import judgesRouter from './routes/judge';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use('/api/events', eventsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/teams', teamsRouter);
 app.use('/api/scores', scoresRouter);
+app.use('/api/judges', judgesRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
