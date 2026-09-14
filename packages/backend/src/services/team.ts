@@ -80,6 +80,9 @@ export async function getTeamById(req: Request, res: Response) {
     }
     const team = await prisma.team.findUnique({
       where: { id: teamId },
+      include: {
+        scores: true,
+      },
     });
     if (!team) {
       return ResponseUtils.error(res, 404, '队伍不存在');

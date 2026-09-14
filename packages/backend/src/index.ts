@@ -2,6 +2,7 @@ import express from 'express';
 import eventsRouter from './routes/event';
 import usersRouter from './routes/user';
 import teamsRouter from './routes/team';
+import scoresRouter from './routes/score';
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/api/events', eventsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/teams', teamsRouter);
+app.use('/api/scores', scoresRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');

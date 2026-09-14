@@ -107,7 +107,7 @@ export async function loginUser(req: Request, res: Response) {
 
     const safeUserWithToken = {
       ...safeUser,
-      token: `Bearer ${token}`,
+      token: token,
     };
 
     ResponseUtils.success(res, 200, '登录成功', safeUserWithToken);
