@@ -37,10 +37,10 @@ export async function addJudge(req: Request, res: Response) {
     const newJudge = await prisma.eventJudge.create({
       data: { eventId, userId },
     });
-    ResponseUtils.success(res, 201, '创建评委成功', newJudge);
+    return ResponseUtils.success(res, 201, '创建评委成功', newJudge);
   } catch (err) {
     console.error('创建评委失败:', err);
-    ResponseUtils.serverError(res, '创建评委失败');
+    return ResponseUtils.serverError(res, '创建评委失败');
   }
 }
 
@@ -63,10 +63,10 @@ export async function getJudges(req: Request, res: Response) {
     const judges: JudgeInfo[] = await prisma.eventJudge.findMany({
       where: { eventId },
     });
-    ResponseUtils.success(res, 200, '获取评委列表成功', judges);
+    return ResponseUtils.success(res, 200, '获取评委列表成功', judges);
   } catch (err) {
     console.error('获取评委列表失败:', err);
-    ResponseUtils.serverError(res, '获取评委列表失败');
+    return ResponseUtils.serverError(res, '获取评委列表失败');
   }
 }
 
@@ -88,9 +88,12 @@ export async function removeJudge(req: Request, res: Response) {
     await prisma.eventJudge.delete({
       where: { id: judgeId },
     });
-    ResponseUtils.success(res, 200, '删除评委成功', null);
+    return ResponseUtils.success(res, 200, '删除评委成功', null);
   } catch (err) {
     console.error('删除评委失败:', err);
-    ResponseUtils.serverError(res, '删除评委失败');
+    if ((err as any)?.code === 'P2003') {
+      return ResponseUtils.error(res, 400, '该评委存在关联数据，无法删除');
+    }
+    return ResponseUtils.serverError(res, '删除评委失败');
   }
 }

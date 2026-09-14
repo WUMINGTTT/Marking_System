@@ -60,10 +60,10 @@ export async function createScore(req: Request, res: Response) {
       },
     });
 
-    ResponseUtils.success(res, 201, '创建得分成功', newScore);
+    return ResponseUtils.success(res, 201, '创建得分成功', newScore);
   } catch (err) {
     console.error('创建得分失败:', err);
-    ResponseUtils.serverError(res, '创建得分失败');
+    return ResponseUtils.serverError(res, '创建得分失败');
   }
 }
 
@@ -104,10 +104,10 @@ export async function getScores(req: Request, res: Response) {
         eventId: team.eventId,
       },
     });
-    ResponseUtils.success(res, 200, '获取得分列表成功', scores);
+    return ResponseUtils.success(res, 200, '获取得分列表成功', scores);
   } catch (err) {
     console.error('获取得分列表失败:', err);
-    ResponseUtils.serverError(res, '获取得分列表失败');
+    return ResponseUtils.serverError(res, '获取得分列表失败');
   }
 }
 
@@ -145,6 +145,7 @@ export async function updateScore(req: Request, res: Response) {
     if (!req.user) {
       return ResponseUtils.error(res, 401, '未认证');
     }
+
     // 更新得分
     await prisma.score.update({
       where: {
@@ -158,10 +159,10 @@ export async function updateScore(req: Request, res: Response) {
         value: score,
       },
     });
-    ResponseUtils.success(res, 200, '更新得分成功', null);
+    return ResponseUtils.success(res, 200, '更新得分成功', null);
   } catch (err) {
     console.error('更新得分失败:', err);
-    ResponseUtils.serverError(res, '更新得分失败');
+    return ResponseUtils.serverError(res, '更新得分失败');
   }
 }
 
@@ -202,10 +203,10 @@ export async function clearScore(req: Request, res: Response) {
         eventId: team.eventId,
       },
     });
-    ResponseUtils.success(res, 200, '清空得分成功', null);
+    return ResponseUtils.success(res, 200, '清空得分成功', null);
   } catch (err) {
     console.error('清空得分失败:', err);
-    ResponseUtils.serverError(res, '清空得分失败');
+    return ResponseUtils.serverError(res, '清空得分失败');
   }
 }
 
@@ -245,9 +246,12 @@ export async function removeScoreById(req: Request, res: Response) {
         id: scoreId,
       },
     });
-    ResponseUtils.success(res, 200, '删除得分成功', null);
+    return ResponseUtils.success(res, 200, '删除得分成功', null);
   } catch (err) {
     console.error('删除得分失败:', err);
-    ResponseUtils.serverError(res, '删除得分失败');
+    if ((err as any)?.code === 'P2003') {
+      return ResponseUtils.error(res, 400, '该得分存在关联数据，无法删除');
+    }
+    return ResponseUtils.serverError(res, '删除得分失败');
   }
 }

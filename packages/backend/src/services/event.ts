@@ -43,10 +43,10 @@ export async function createEvent(req: Request, res: Response) {
     const newEvent: EventInfo = await prisma.event.create({
       data: { name, description, creatorId },
     });
-    ResponseUtils.success(res, 201, '创建活动成功', newEvent);
+    return ResponseUtils.success(res, 201, '创建活动成功', newEvent);
   } catch (err) {
     console.error('创建失败:', err);
-    ResponseUtils.serverError(res, '创建活动失败');
+    return ResponseUtils.serverError(res, '创建活动失败');
   }
 }
 
@@ -63,10 +63,10 @@ export async function getAllEvents(req: Request, res: Response) {
       },
       orderBy: { createdAt: 'desc' },
     });
-    ResponseUtils.success(res, 200, '获取活动列表成功', events);
+    return ResponseUtils.success(res, 200, '获取活动列表成功', events);
   } catch (err) {
     console.error('获取失败:', err);
-    ResponseUtils.serverError(res, '获取活动列表失败');
+    return ResponseUtils.serverError(res, '获取活动列表失败');
   }
 }
 
@@ -76,7 +76,7 @@ export async function getAllEvents(req: Request, res: Response) {
 export async function getEventById(req: Request, res: Response) {
   try {
     // 获取并校验请求参数
-    let eventId = req.params.id;
+    let eventId = req.params.eventId;
 
     if (typeof eventId !== 'string') {
       return ResponseUtils.error(res, 400, '无效的活动ID');
@@ -87,10 +87,10 @@ export async function getEventById(req: Request, res: Response) {
     if (!event) {
       return ResponseUtils.error(res, 404, '活动不存在');
     }
-    ResponseUtils.success(res, 200, '获取活动成功', event);
+    return ResponseUtils.success(res, 200, '获取活动成功', event);
   } catch (err) {
     console.error(err);
-    ResponseUtils.serverError(res, '获取活动失败');
+    return ResponseUtils.serverError(res, '获取活动失败');
   }
 }
 
@@ -100,7 +100,7 @@ export async function getEventById(req: Request, res: Response) {
 export async function updeteEvent(req: Request, res: Response) {
   try {
     // 获取并校验请求参数
-    let eventId = req.params.id;
+    let eventId = req.params.eventId;
     if (typeof eventId !== 'string') {
       return ResponseUtils.error(res, 400, '无效的活动ID');
     }
@@ -119,10 +119,10 @@ export async function updeteEvent(req: Request, res: Response) {
       where: { id: parseInt(eventId) },
       data: { name, description, status },
     });
-    ResponseUtils.success(res, 200, '修改活动成功', null);
+    return ResponseUtils.success(res, 200, '修改活动成功', null);
   } catch (err) {
     console.error(err);
-    ResponseUtils.serverError(res, '修改活动失败');
+    return ResponseUtils.serverError(res, '修改活动失败');
   }
 }
 
@@ -132,7 +132,7 @@ export async function updeteEvent(req: Request, res: Response) {
 export async function deleteEvent(req: Request, res: Response) {
   try {
     // 获取并校验请求参数
-    let eventId = req.params.id;
+    let eventId = req.params.eventId;
     if (typeof eventId !== 'string') {
       return ResponseUtils.error(res, 400, '无效的活动ID');
     }
@@ -145,9 +145,46 @@ export async function deleteEvent(req: Request, res: Response) {
     await prisma.event.delete({
       where: { id: parseInt(eventId) },
     });
-    ResponseUtils.success(res, 200, '删除活动成功', null);
+    return ResponseUtils.success(res, 200, '删除活动成功', null);
   } catch (err) {
     console.error(err);
-    ResponseUtils.serverError(res, '删除活动失败');
+    if ((err as any)?.code === 'P2003') {
+      return ResponseUtils.error(res, 400, '该活动存在关联数据，无法删除');
+    }
+    return ResponseUtils.serverError(res, '删除活动失败');
+  }
+}
+
+/**
+ * 获取所有活动（包含所有关联数据）
+ */
+export async function allEvents(req: Request, res: Response) {
+  try {
+    const events = await prisma.event.findMany({
+      include: {
+        creator: {
+          select: { id: true, name: true },
+        },
+        judges: {
+          include: {
+            user: { select: { id: true, name: true, username: true } },
+          },
+        },
+        teams: {
+          include: {
+            scores: {
+              include: {
+                judge: { select: { id: true, name: true } },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return ResponseUtils.success(res, 200, '获取活动列表成功', events);
+  } catch (err) {
+    console.error('获取失败:', err);
+    return ResponseUtils.serverError(res, '获取活动列表失败');
   }
 }

@@ -36,10 +36,10 @@ export async function createTeam(req: Request, res: Response) {
     const team: TeamInfo = await prisma.team.create({
       data: { name: name.toString(), eventId },
     });
-    ResponseUtils.success(res, 201, '创建队伍成功', team);
+    return ResponseUtils.success(res, 201, '创建队伍成功', team);
   } catch (err) {
     console.error('创建队伍失败:', err);
-    ResponseUtils.serverError(res, '创建队伍失败');
+    return ResponseUtils.serverError(res, '创建队伍失败');
   }
 }
 
@@ -62,10 +62,10 @@ export async function getTeams(req: Request, res: Response) {
     const teams: TeamInfo[] = await prisma.team.findMany({
       where: { eventId },
     });
-    ResponseUtils.success(res, 200, '获取队伍列表成功', teams);
+    return ResponseUtils.success(res, 200, '获取队伍列表成功', teams);
   } catch (err) {
     console.error('获取队伍列表失败:', err);
-    ResponseUtils.serverError(res, '获取队伍列表失败');
+    return ResponseUtils.serverError(res, '获取队伍列表失败');
   }
 }
 
@@ -84,10 +84,10 @@ export async function getTeamById(req: Request, res: Response) {
     if (!team) {
       return ResponseUtils.error(res, 404, '队伍不存在');
     }
-    ResponseUtils.success(res, 200, '获取队伍成功', team);
+    return ResponseUtils.success(res, 200, '获取队伍成功', team);
   } catch (err) {
     console.error('获取队伍失败:', err);
-    ResponseUtils.serverError(res, '获取队伍失败');
+    return ResponseUtils.serverError(res, '获取队伍失败');
   }
 }
 
@@ -118,10 +118,10 @@ export async function updateTeam(req: Request, res: Response) {
       where: { id: teamId },
       data: { name: name.toString() },
     });
-    ResponseUtils.success(res, 200, '更新队伍成功', updatedTeam);
+    return ResponseUtils.success(res, 200, '更新队伍成功', updatedTeam);
   } catch (err) {
     console.error('更新队伍失败:', err);
-    ResponseUtils.serverError(res, '更新队伍失败');
+    return ResponseUtils.serverError(res, '更新队伍失败');
   }
 }
 
@@ -144,9 +144,12 @@ export async function deleteTeam(req: Request, res: Response) {
     await prisma.team.delete({
       where: { id: teamId },
     });
-    ResponseUtils.success(res, 200, '删除队伍成功', null);
+    return ResponseUtils.success(res, 200, '删除队伍成功', null);
   } catch (err) {
     console.error('删除队伍失败:', err);
-    ResponseUtils.serverError(res, '删除队伍失败');
+    if ((err as any)?.code === 'P2003') {
+      return ResponseUtils.error(res, 400, '该队伍存在关联数据，无法删除');
+    }
+    return ResponseUtils.serverError(res, '删除队伍失败');
   }
 }

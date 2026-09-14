@@ -46,7 +46,7 @@ model EventJudge {
   userId   Int      @map("judge_id")
   createdAt DateTime @default(now()) @map("created_at")
 
-  event Event @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user User  @relation(fields: [userId], references: [id])
 
   @@unique([eventId, userId])
@@ -60,7 +60,7 @@ model Team {
   name         String   @db.VarChar(100)
   createdAt    DateTime @default(now()) @map("created_at")
 
-  event  Event  @relation(fields: [eventId], references: [id])
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   scores Score[]
 
   @@unique([eventId, name])
@@ -76,8 +76,8 @@ model Score {
   value     Decimal       @db.Decimal(5, 2)
   createdAt DateTime      @default(now()) @map("created_at")
 
-  event Event @relation(fields: [eventId], references: [id])
-  team  Team  @relation(fields: [teamId], references: [id])
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
   judge User  @relation(fields: [judgeId], references: [id])
 
   @@unique([eventId, teamId, judgeId])

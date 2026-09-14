@@ -67,10 +67,10 @@ export async function registerUser(req: Request, res: Response) {
       },
     });
 
-    ResponseUtils.success(res, 201, '注册成功', user);
+    return ResponseUtils.success(res, 201, '注册成功', user);
   } catch (err) {
     console.error('注册失败:', err);
-    ResponseUtils.serverError(res, '注册失败');
+    return ResponseUtils.serverError(res, '注册失败');
   }
 }
 
@@ -110,10 +110,10 @@ export async function loginUser(req: Request, res: Response) {
       token: token,
     };
 
-    ResponseUtils.success(res, 200, '登录成功', safeUserWithToken);
+    return ResponseUtils.success(res, 200, '登录成功', safeUserWithToken);
   } catch (err) {
     console.error('登录失败:', err);
-    ResponseUtils.serverError(res, '登录失败');
+    return ResponseUtils.serverError(res, '登录失败');
   }
 }
 
@@ -124,13 +124,24 @@ export async function deleteUser(req: Request, res: Response) {
   try {
     const user = (await findCurrentUser(req, res)) as UserInfo;
 
+    // // 检查用户是否是当前登录用户
+    // const userId = req.user?.userId as number;
+    // if (user.id !== userId) {
+    //   return ResponseUtils.error(res, 403, '您没有权限删除其他用户');
+    // }
+
+    // 删除用户
     await prisma.user.delete({
       where: { id: user.id },
     });
-    ResponseUtils.success(res, 200, '删除用户成功', null);
+    return ResponseUtils.success(res, 200, '删除用户成功', null);
   } catch (err) {
     console.error('删除用户失败:', err);
-    ResponseUtils.serverError(res, '删除用户失败');
+    // 处理关联数据错误
+    if ((err as any)?.code === 'P2003') {
+      return ResponseUtils.error(res, 400, '该用户存在关联数据，无法删除');
+    }
+    return ResponseUtils.serverError(res, '删除用户失败');
   }
 }
 
@@ -147,10 +158,10 @@ export async function getAllUsers(req: Request, res: Response) {
         createdAt: true,
       },
     });
-    ResponseUtils.success(res, 200, '获取用户列表成功', users);
+    return ResponseUtils.success(res, 200, '获取用户列表成功', users);
   } catch (err) {
     console.error('获取用户列表失败:', err);
-    ResponseUtils.serverError(res, '获取用户列表失败');
+    return ResponseUtils.serverError(res, '获取用户列表失败');
   }
 }
 
@@ -173,10 +184,10 @@ export async function getUserById(req: Request, res: Response) {
       },
     });
 
-    ResponseUtils.success(res, 200, '获取用户成功', user);
+    return ResponseUtils.success(res, 200, '获取用户成功', user);
   } catch (err) {
     console.error('获取用户失败:', err);
-    ResponseUtils.serverError(res, '获取用户失败');
+    return ResponseUtils.serverError(res, '获取用户失败');
   }
 }
 
@@ -225,10 +236,10 @@ export async function changeUserPassword(req: Request, res: Response) {
       },
     });
 
-    ResponseUtils.success(res, 200, '修改密码成功', updatedUser);
+    return ResponseUtils.success(res, 200, '修改密码成功', updatedUser);
   } catch (err) {
     console.error('修改密码失败:', err);
-    ResponseUtils.serverError(res, '修改密码失败');
+    return ResponseUtils.serverError(res, '修改密码失败');
   }
 }
 
@@ -257,9 +268,9 @@ export async function changeUserName(req: Request, res: Response) {
       },
     });
 
-    ResponseUtils.success(res, 200, '修改昵称成功', updatedUser);
+    return ResponseUtils.success(res, 200, '修改昵称成功', updatedUser);
   } catch (err) {
     console.error('修改昵称失败:', err);
-    ResponseUtils.serverError(res, '修改昵称失败');
+    return ResponseUtils.serverError(res, '修改昵称失败');
   }
 }
