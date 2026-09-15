@@ -156,6 +156,46 @@ export async function deleteEvent(req: Request, res: Response) {
 }
 
 /**
+ * 获取当前用户在某活动中的身份
+ */
+export async function getMyRole(req: Request, res: Response) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return ResponseUtils.error(res, 401, '未登录');
+    }
+    const eventId = Number(req.params.eventId);
+    if (!eventId) {
+      return ResponseUtils.error(res, 400, '活动ID是必填的');
+    }
+
+    const event = await prisma.event.findUnique({ where: { id: eventId } });
+    if (!event) {
+      return ResponseUtils.error(res, 404, '活动不存在');
+    }
+
+    // 创建者优先
+    if (event.creatorId === userId) {
+      return ResponseUtils.success(res, 200, '获取身份成功', {
+        role: 'creator',
+      });
+    }
+
+    // 其次判断是否为评委
+    const judge = await prisma.eventJudge.findUnique({
+      where: { eventId_userId: { eventId, userId } },
+    });
+
+    return ResponseUtils.success(res, 200, '获取身份成功', {
+      role: judge ? 'judge' : 'viewer',
+    });
+  } catch (err) {
+    console.error('获取身份失败:', err);
+    return ResponseUtils.serverError(res, '获取身份失败');
+  }
+}
+
+/**
  * 获取所有活动（包含所有关联数据）
  */
 export async function allEvents(req: Request, res: Response) {

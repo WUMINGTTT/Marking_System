@@ -7,6 +7,7 @@ import {
   updeteEvent,
   deleteEvent,
   allEvents,
+  getMyRole,
 } from '../services/event';
 import { requireCreator } from '../middlewares/require';
 
@@ -19,5 +20,6 @@ router.put('/:eventId', auth, requireCreator, updeteEvent); // 修改活动
 router.delete('/:eventId', auth, requireCreator, deleteEvent); // 删除活动
 
 router.get('/all', auth, allEvents); // 获取所有活动（包含所有关联数据）
+router.get('/my-role/:eventId', auth, getMyRole); // 获取当前用户在某活动中的身份
 
 export default router;
