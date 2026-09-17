@@ -25,33 +25,33 @@ export async function getAll() {
 
 /**
  * 获取单个活动
- * @param id 活动id
+ * @param eventId 活动id
  */
-export async function getEvent(id: number) {
-  return request.get<EventInfo>(`/api/events/getbyid/${id}}`);
+export async function getEvent(eventId: number) {
+  return request.get<EventInfo>(`/api/events/getbyid/${eventId}}`);
 }
 
 /**
  * 更新活动信息
- * @param id 活动id
+ * @param eventId 活动id
  * @param data 请求参数
  */
-export async function updateEvent(id: number, data: UpdateEvent) {
-  return request.put(`/api/events/${id}`, data);
+export async function updateEvent(eventId: number, data: UpdateEvent) {
+  return request.put(`/api/events/${eventId}`, data);
 }
 
 /**
  * 删除活动
- * @param id 活动id
+ * @param eventId 活动id
  */
-export async function deleteEvent(id: number) {
-  return request.delete(`/api/events/${id}`);
+export async function deleteEvent(eventId: number) {
+  return request.delete(`/api/events/${eventId}`);
 }
 
 /**
  * 获取用户在活动中的身份
- * @param id 活动id
+ * @param eventId 活动id
  */
-export async function getMyRole(id: number) {
-  return request.get(`/api/events/my-role/${id}`);
+export async function getMyRole(eventId: number) {
+  return request.get(`/api/events/my-role/${eventId}`);
 }

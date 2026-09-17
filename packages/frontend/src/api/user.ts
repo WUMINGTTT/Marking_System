@@ -3,6 +3,7 @@ import type { UserRegister, UserInfo, UserLogin, ChangePassword } from 'shared';
 
 /**
  * 注册用户
+ * @param data 请求参数
  */
 export async function register(data: UserRegister) {
   return request.post<UserRegister>('/api/users/register', data);
@@ -10,6 +11,7 @@ export async function register(data: UserRegister) {
 
 /**
  * 登录用户
+ * @param data 请求参数
  */
 export async function login(data: UserLogin) {
   return request.post<UserLogin>('/api/users/login', data);
@@ -31,9 +33,10 @@ export async function getUserList() {
 
 /**
  * 获取单个用户
+ * @param userId 用户id
  */
-export async function getUser(id: number) {
-  return request.get<UserInfo>(`/api/users/${id}`);
+export async function getUser(userId: number) {
+  return request.get<UserInfo>(`/api/users/${userId}`);
 }
 
 /**
