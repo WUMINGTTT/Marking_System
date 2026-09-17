@@ -1,5 +1,5 @@
 import prisma from '../lib/prisma';
-import { UserInfo, EventInfo, EventCreate } from 'shared';
+import { UserInfo, EventInfo, EventCreate, UpdateEvent } from 'shared';
 import { ResponseUtils } from '../utils/response';
 import { Request, Response } from 'express';
 
@@ -104,7 +104,7 @@ export async function updeteEvent(req: Request, res: Response) {
     if (typeof eventId !== 'string') {
       return ResponseUtils.error(res, 400, '无效的活动ID');
     }
-    const { name, description, status }: EventCreate = req.body;
+    const { name, description, status }: UpdateEvent = req.body;
     if (!name) {
       return ResponseUtils.error(res, 400, '活动名称为必填项');
     }

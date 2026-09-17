@@ -296,14 +296,14 @@
 
 ### 6. 删除活动
 
-- **DELETE** `/api/events/:eventId`
+- **DELETE** `/api/events/:eventId`	
 - **鉴权**：`auth` + `requireCreator`
 
 成功响应 `code: 200`，`data` 为 `null`。存在关联数据时返回 400。
 
 ### 7. 获取当前用户在某活动中的身份
 
-- **GET** `/api/events/:eventId/my-role`
+- **GET** `/api/events/my-role/:eventId`
 - **鉴权**：`auth`
 
 路径参数 `eventId`：活动 ID。

@@ -24,5 +24,14 @@ export interface EventInfo {
 export interface EventCreate {
   name: string;
   description: string | null;
-  status: string; //'pending' | 'active' | 'finished'
+}
+
+/**
+ * 更新活动参数
+ *
+ */
+export interface UpdateEvent {
+  name?: string | null;
+  description?: string | null;
+  status?: string; //'pending' | 'active' | 'finished'
 }

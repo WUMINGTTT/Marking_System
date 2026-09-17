@@ -20,7 +20,7 @@ request.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 响应拦截器：统一解包 + 统一错误
+// 响应拦截器
 request.interceptors.response.use(
   (res) => res.data, // 直接返回业务数据
   (err) => {
