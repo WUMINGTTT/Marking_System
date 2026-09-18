@@ -9,7 +9,6 @@
     "dev:backend": "pnpm --filter backend dev",
     "build:frontend": "pnpm --filter frontend build",
     "build:backend": "pnpm --filter backend build",
-    "dev": "pnpm run dev:backend & pnpm run dev:frontend",
     "format": "prettier --write ."
   },
   "workspaces": [

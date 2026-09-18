@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import eventsRouter from './routes/event';
 import usersRouter from './routes/user';
 import teamsRouter from './routes/team';
@@ -9,6 +10,7 @@ const app = express();
 
 // 解析 JSON 请求体
 app.use(express.json());
+app.use(cors());
 
 // 挂载路由
 app.use('/api/events', eventsRouter);
