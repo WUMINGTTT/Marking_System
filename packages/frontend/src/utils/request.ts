@@ -1,5 +1,6 @@
 // 初始化axios
 import axios from 'axios';
+import router from '@/router';
 
 // 配置axios
 const request = axios.create({
@@ -28,7 +29,10 @@ request.interceptors.response.use(
       console.log('请求超时');
     } else if (err.response?.status === 401) {
       console.log('登录已过期');
+      // 清除 token
+      localStorage.removeItem('token');
       // 跳登录页
+      router.push('/login');
     } else {
       console.log(err.response?.data?.message || '请求失败');
     }

@@ -1,12 +1,12 @@
 import request from '@/utils/request';
-import type { UserRegister, UserInfo, UserLogin, ChangePassword } from 'shared';
+import type { UserRegister, UserLogin } from 'shared';
 
 /**
  * 注册用户
  * @param data 请求参数
  */
 export async function register(data: UserRegister) {
-  return request.post<UserRegister>('/api/users/register', data);
+  return request.post('/api/users/register', data);
 }
 
 /**
@@ -14,7 +14,7 @@ export async function register(data: UserRegister) {
  * @param data 请求参数
  */
 export async function login(data: UserLogin) {
-  return request.post<UserLogin>('/api/users/login', data);
+  return request.post('/api/users/login', data);
 }
 
 /**
@@ -28,7 +28,7 @@ export async function deleteUser() {
  * 获取用户列表
  */
 export async function getUserList() {
-  return request.get<UserInfo[]>('/api/users');
+  return request.get('/api/users');
 }
 
 /**
@@ -36,19 +36,19 @@ export async function getUserList() {
  * @param userId 用户id
  */
 export async function getUser(userId: number) {
-  return request.get<UserInfo>(`/api/users/${userId}`);
+  return request.get(`/api/users/${userId}`);
 }
 
 /**
  * 修改密码
  */
 export async function changePassword() {
-  return request.put<ChangePassword>('/api/users/password');
+  return request.put('/api/users/password');
 }
 
 /**
  * 修改昵称
  */
 export async function changeName() {
-  return request.put<{ newName: string }>('/api/users/name');
+  return request.put('/api/users/name');
 }
