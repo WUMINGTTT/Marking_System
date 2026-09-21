@@ -9,26 +9,34 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: () => import('@/views/Home.vue'),
+      redirect: '/home/events',
+      children: [
+        {
+          path: 'events',
+          name: 'events',
+          component: () => import('@/views/Events.vue'),
+        },
+        {
+          path: 'judge/:eventId',
+          name: 'judge',
+          component: () => import('@/views/Judge.vue'),
+        },
+        {
+          path: 'admin/:eventId',
+          name: 'admin',
+          component: () => import('@/views/Admin.vue'),
+        },
+        {
+          path: 'display/:eventId',
+          name: 'display',
+          component: () => import('@/views/Display.vue'),
+        },
+      ],
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),
-    },
-    {
-      path: '/display/:eventId',
-      name: 'display',
-      component: () => import('@/views/Display.vue'),
-    },
-    {
-      path: '/admin/:eventId',
-      name: 'admin',
-      component: () => import('@/views/Admin.vue'),
-    },
-    {
-      path: '/judge/:eventId',
-      name: 'judge',
-      component: () => import('@/views/Judge.vue'),
     },
     // 其余全部重定向到登录页
     { path: '/:pathMatch(.*)*', redirect: '/login' },
@@ -36,12 +44,18 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, _from) => {
-  const token = localStorage.getItem('token');
+  let token = localStorage.getItem('token');
   const userStore = useUserStore();
 
   // 检查是否 token 存在且用户信息不存在，是则获取用户信息
   if (token && !userStore.userInfo) {
-    await userStore.getMy();
+    try {
+      await userStore.getMy();
+    } catch {
+      // 获取用户信息失败，说明token无效，执行退出登录操作
+      userStore.logout();
+      token = null;
+    }
   }
 
   // 访问登录页

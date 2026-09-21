@@ -1,5 +1,13 @@
 <script setup lang="ts"></script>
 
-<template></template>
+<template>
+  <div>
+    <h1>Judge</h1>
+  </div>
+</template>
 
-<style scoped lang="scss"></style>
+<style scoped>
+h1 {
+  color: red;
+}
+</style>

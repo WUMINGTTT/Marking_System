@@ -28,20 +28,25 @@ request.interceptors.response.use(
       console.log('请求超时');
     } else if (err.response?.status === 401) {
       console.log('登录已过期');
+      try {
+        if (!isRedirecting) {
+          isRedirecting = true;
 
-      if (!isRedirecting) {
-        isRedirecting = true;
+          const { useUserStore } = await import('@/stores/user');
 
-        const { useUserStore } = await import('@/stores/user');
+          const router = (await import('@/router')).default;
+          const userStore = useUserStore();
+          userStore.logout();
 
-        const router = (await import('@/router')).default;
-        const userStore = useUserStore();
-        userStore.logout();
+          if (router.currentRoute.value.path !== '/login') {
+            await router.replace('/login');
+          }
 
-        if (router.currentRoute.value.path !== '/login') {
-          await router.replace('/login');
+          isRedirecting = false;
         }
-
+      } catch (error) {
+        console.error('跳转登录页失败:', error);
+      } finally {
         isRedirecting = false;
       }
     } else {
