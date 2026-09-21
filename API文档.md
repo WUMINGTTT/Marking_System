@@ -161,7 +161,7 @@
 
 ### 5. 获取单个用户
 
-- **GET** `/api/users/:id`
+- **GET** `/api/users/getbyid/:id`
 - **鉴权**：`auth`
 
 路径参数：

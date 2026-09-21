@@ -36,7 +36,7 @@ export async function getUserList() {
  * @param userId 用户id
  */
 export async function getUser(userId: number) {
-  return request.get(`/api/users/${userId}`);
+  return request.get(`/api/users/getbyid/${userId}`);
 }
 
 /**

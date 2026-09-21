@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import { User, Lock } from '@element-plus/icons-vue';
+import { User, Lock, CircleCheck, View } from '@element-plus/icons-vue';
 const showLogin = ref(true);
 import { ElMessage, type FormInstance } from 'element-plus';
 import 'element-plus/dist/index.css';
@@ -39,15 +39,14 @@ const loginFn = async () => {
   // 发登录请求
   try {
     const res = await login(loginForm);
-    // 登录成功后，将 token 存储到 localStorage 和 pinia 中
-    userStore.setToken(res.data.token);
+    // 登录成功后，将 token 存储到 localStorage 中
+    localStorage.setItem('token', res.data.token);
     // 登录成功后，将用户信息保存到 store 中
-    await userStore.getMy();
     ElMessage.success(`登录成功，欢迎 ${res.data.name} `);
     // 清空表单数据
     loginFormRef.value?.resetFields();
     // 跳转到首页
-    router.push({ name: 'home' });
+    router.replace({ name: 'home' });
   } catch (error: any) {
     // 登录失败，显示错误信息(从响应信息中拆出错误信息)
     ElMessage.error(error.response.data.message);
@@ -168,7 +167,7 @@ const switchover = () => {
         <el-input
           class="input"
           clearable
-          :prefix-icon="User"
+          :prefix-icon="View"
           v-model="registerForm.name"
           placeholder="请输入昵称"
         />
@@ -195,7 +194,7 @@ const switchover = () => {
       <el-form-item prop="confirmPassword">
         <el-input
           class="input"
-          :prefix-icon="Lock"
+          :prefix-icon="CircleCheck"
           v-model="registerForm.confirmPassword"
           type="password"
           placeholder="确认密码"

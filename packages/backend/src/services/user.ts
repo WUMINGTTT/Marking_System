@@ -11,6 +11,7 @@ import { Request, Response } from 'express';
  */
 async function findCurrentUser(req: Request, res: Response) {
   const userId = req.user?.userId;
+
   if (!userId) {
     return ResponseUtils.error(res, 401, '未登录');
   }
@@ -109,7 +110,6 @@ export async function loginUser(req: Request, res: Response) {
       ...safeUser,
       token: token,
     };
-
     return ResponseUtils.success(res, 200, '登录成功', safeUserWithToken);
   } catch (err) {
     console.error('登录失败:', err);
