@@ -274,3 +274,18 @@ export async function changeUserName(req: Request, res: Response) {
     return ResponseUtils.serverError(res, '修改昵称失败');
   }
 }
+
+/**
+ * 获取当前用户信息
+ */
+export async function getUserInfo(req: Request, res: Response) {
+  try {
+    const user = await findCurrentUser(req, res);
+    if (!user) return;
+
+    return ResponseUtils.success(res, 200, '获取用户信息成功', user);
+  } catch (err) {
+    console.error('获取用户信息失败:', err);
+    return ResponseUtils.serverError(res, '获取用户信息失败');
+  }
+}

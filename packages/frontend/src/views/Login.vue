@@ -5,7 +5,11 @@ const showLogin = ref(true);
 import { ElMessage, type FormInstance } from 'element-plus';
 import 'element-plus/dist/index.css';
 import { login, register } from '@/api/user';
-import router from '@/router';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+
+const router = useRouter();
+const userStore = useUserStore();
 
 const loginFormRef = ref<FormInstance>();
 const registerFormRef = ref<FormInstance>();
@@ -35,9 +39,10 @@ const loginFn = async () => {
   // 发登录请求
   try {
     const res = await login(loginForm);
-    // 登录成功后，将 token 存储到 localStorage 中
-    localStorage.setItem('token', res.data.token);
-    localStorage.setItem('userId', res.data.id);
+    // 登录成功后，将 token 存储到 localStorage 和 pinia 中
+    userStore.setToken(res.data.token);
+    // 登录成功后，将用户信息保存到 store 中
+    await userStore.getMy();
     ElMessage.success(`登录成功，欢迎 ${res.data.name} `);
     // 清空表单数据
     loginFormRef.value?.resetFields();

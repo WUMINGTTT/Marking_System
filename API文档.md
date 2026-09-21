@@ -205,6 +205,15 @@
 
 ---
 
+### 8. 获取当前用户信息
+
+- **GET** `/api/users/my`
+- **鉴权**：`auth`
+
+成功响应 `code: 200`，`data` 为当前登录用户对象。
+
+---
+
 ## 模块二：活动管理 `/api/events`
 
 ### 1. 创建活动
@@ -296,7 +305,7 @@
 
 ### 6. 删除活动
 
-- **DELETE** `/api/events/:eventId`	
+- **DELETE** `/api/events/:eventId`
 - **鉴权**：`auth` + `requireCreator`
 
 成功响应 `code: 200`，`data` 为 `null`。存在关联数据时返回 400。

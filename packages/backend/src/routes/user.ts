@@ -8,6 +8,7 @@ import {
   changeUserPassword,
   changeUserName,
   deleteUser,
+  getUserInfo,
 } from '../services/user';
 
 const router = Router();
@@ -19,5 +20,6 @@ router.get('/', auth, getAllUsers); // 获取用户列表
 router.get('/:id', auth, getUserById); // 获取单个用户
 router.put('/password', auth, changeUserPassword); // 修改密码
 router.put('/name', auth, changeUserName); // 修改昵称
+router.get('/my', auth, getUserInfo); // 获取当前用户信息
 
 export default router;

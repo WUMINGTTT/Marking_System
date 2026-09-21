@@ -52,3 +52,10 @@ export async function changePassword() {
 export async function changeName() {
   return request.put('/api/users/name');
 }
+
+/**
+ * 获取当前用户信息
+ */
+export async function getUserInfo() {
+  return request.get('/api/users/my');
+}
